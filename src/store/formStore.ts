@@ -4,19 +4,50 @@ import { v4 as uuid } from "uuid";
 
 export type QuestionType = "text" | "checkbox" | "radio" | "button";
 
+export type FieldType =
+  | "text"
+  | "email"
+  | "password"
+  | "textarea"
+  | "date"
+  | "datetime"
+  | "dropdown"
+  | "checkbox"
+  | "radio"
+  | "switch"
+  | "button";
+
+export interface Option {
+  id: string;
+  label: string;
+  value: string;
+}
 
 export interface Question {
   id: string;
-  type: QuestionType;
   label: string;
-  options?: string[]; // for checkbox/radio
+  name: string;
+  placeholder?: string;
+  type: FieldType;
+  required?: boolean;
+  defaultValue?: string | boolean;
+  validation?: { pattern?: string; message?: string };
+  options?: Option[];
+  colSpan?: 1 | 2 | 3 | 4; // for 4-column layout
+  section?: string; // optional section/group
 }
+
+
 
 export interface FormSchema {
   id: string;
   name: string;
+  version: number;      // new
   questions: Question[];
+  createdAt: string;    // timestamp
+  updatedAt: string;
 }
+
 
 interface FormStore {
   forms: FormSchema[];

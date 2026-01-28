@@ -13,13 +13,14 @@ import {
   Stack,
   Button,
   Paper,
+  MenuItem,
+  Switch,
 } from "@mui/material";
 
 export default function ViewFormPage() {
   const { id } = useParams();
   const { forms } = useFormStore();
 
-  // Find the form by id
   const form = forms.find((f) => f.id === id);
 
   if (!form) {
@@ -34,7 +35,6 @@ export default function ViewFormPage() {
 
   return (
     <Box sx={{ p: 4, maxWidth: 800, mx: "auto" }}>
-      {/* Form Title */}
       <Typography variant="h4" gutterBottom sx={{ mb: 3, fontWeight: 500 }}>
         {form.name}
       </Typography>
@@ -42,23 +42,54 @@ export default function ViewFormPage() {
       <Stack spacing={3}>
         {form.questions.map((q, idx) => (
           <Paper key={q.id} elevation={2} sx={{ p: 3, borderRadius: 2 }}>
-            {/* Question Label */}
             <Typography variant="subtitle1" sx={{ mb: 2 }}>
-              {idx + 1}. {q.label}
+              {idx + 1}. {q.label} {q.required && "*"}
             </Typography>
 
-            {/* Render input based on type */}
-            {q.type === "text" && (
-              <TextField fullWidth placeholder="Your answer" />
+            {["text", "email", "password", "textarea"].includes(q.type) && (
+              <TextField
+                fullWidth
+                placeholder={q.placeholder || "Your answer"}
+                type={q.type === "textarea" ? "text" : q.type}
+                multiline={q.type === "textarea"}
+                rows={q.type === "textarea" ? 4 : 1}
+                defaultValue={q.defaultValue || ""}
+              />
+            )}
+
+            {q.type === "date" && (
+              <TextField
+                fullWidth
+                type="date"
+                defaultValue={q.defaultValue || ""}
+              />
+            )}
+
+            {q.type === "datetime" && (
+              <TextField
+                fullWidth
+                type="datetime-local"
+                defaultValue={q.defaultValue || ""}
+              />
+            )}
+
+            {q.type === "dropdown" && (
+              <TextField select fullWidth defaultValue={q.defaultValue || ""}>
+                {q.options?.map((opt) => (
+                  <MenuItem key={opt.id} value={opt.value}>
+                    {opt.label}
+                  </MenuItem>
+                ))}
+              </TextField>
             )}
 
             {q.type === "checkbox" && (
               <Stack spacing={1}>
-                {q.options?.map((opt, i) => (
+                {q.options?.map((opt) => (
                   <FormControlLabel
-                    key={i}
+                    key={opt.id}
                     control={<Checkbox />}
-                    label={opt}
+                    label={opt.label}
                   />
                 ))}
               </Stack>
@@ -66,15 +97,22 @@ export default function ViewFormPage() {
 
             {q.type === "radio" && (
               <RadioGroup>
-                {q.options?.map((opt, i) => (
+                {q.options?.map((opt) => (
                   <FormControlLabel
-                    key={i}
-                    value={opt}
+                    key={opt.id}
+                    value={opt.value}
                     control={<Radio />}
-                    label={opt}
+                    label={opt.label}
                   />
                 ))}
               </RadioGroup>
+            )}
+
+            {q.type === "switch" && (
+              <FormControlLabel
+                control={<Switch defaultChecked={q.defaultValue === "true"} />}
+                label={q.label}
+              />
             )}
 
             {q.type === "button" && (
@@ -86,7 +124,6 @@ export default function ViewFormPage() {
         ))}
       </Stack>
 
-      {/* Submit button at the bottom like Google Forms */}
       <Button variant="contained" color="primary" sx={{ mt: 4 }} fullWidth>
         Submit
       </Button>

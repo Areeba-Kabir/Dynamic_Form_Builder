@@ -75,6 +75,9 @@ export default function FormsPage() {
               {/* Form name */}
               <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: 500 }}>
                 {form.name}
+                <Typography variant="body2" color="text.secondary">
+                  Version: {form.version}
+                </Typography>
               </Typography>
 
               {/* Buttons */}
