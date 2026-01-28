@@ -1,36 +1,86 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Dynamic Form Builder (Next.js + Zustand + MUI)
 
-## Getting Started
+A dynamic, schema-driven form builder and renderer.  
+Forms are created, edited, versioned, and rendered entirely from JSON.
 
-First, run the development server:
+## Tech Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Next.js (App Router)**
+- **TypeScript**
+- **Zustand** – state management
+- **Material UI (MUI)** – UI components
+- **UUID** – unique IDs for forms, sections, fields
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Form Builder
+- Create & edit forms dynamically
+- Multiple **field types**
+- **Sections & grouping**
+- Field options (dropdown, checkbox, radio)
+- Required & validation rules
+- Column span support (1–4 columns)
+- Save as **Draft**
 
-## Learn More
+## Form Renderer
+- Render form from JSON schema
+- Conditional field rendering (dependencies)
+- Apply validations
+- Clear form
+- Submit form 
 
-To learn more about Next.js, take a look at the following resources:
+# Advanced
+- Form versioning
+- Schema-first architecture
+- Easily extensible for backend persistence
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Supported Field Types
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Text
+- Email
+- Password
+- TextArea
+- Date
+- DateTime
+- Dropdown
+- Checkbox
+- Radio Group
+- Toggle (Switch)
+- Button
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Architecture Overview
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+FormSchema {
+  id: string;
+  name: string;
+  version: number;      
+  questions: Question[];
+  createdAt: string;    
+  updatedAt: string;
+}
+
+Question {
+  id: string;
+  label: string;
+  name: string;
+  placeholder?: string;
+  type: FieldType;
+  required?: boolean;
+  defaultValue?: string | boolean;
+  validation?: { pattern?: string; message?: string };
+  options?: Option[];
+  colSpan?: 1 | 2 | 3 | 4; 
+  section?: string;
+}
+
+Form
+│ Questions[]
+│ Validation
+│ ─ Options
+│  ├── Dependency
+│  └── Layout (colSpan)
+└── Versioning
